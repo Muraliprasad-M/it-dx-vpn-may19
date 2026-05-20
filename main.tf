@@ -5,11 +5,7 @@ resource "aws_dx_gateway" "dxgw" {
   name            = var.dx_gateway_name
   amazon_side_asn = var.amazon_side_asn
 
-  tags = {
-    Name        = var.dx_gateway_name
-    Environment = "network"
-    ManagedBy   = "terraform"
-  }
+  tags = local.tags
 }
 
 ############################################
