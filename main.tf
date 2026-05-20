@@ -21,6 +21,7 @@ resource "aws_dx_gateway_association" "dxgw_tgw" {
 ############################################
 # 3. Transit VIFs (HA – Multiple Connections)
 ############################################
+
 resource "aws_dx_transit_virtual_interface" "transit_vif" {
   count = length(var.dx_connection_ids)
 
@@ -33,11 +34,13 @@ resource "aws_dx_transit_virtual_interface" "transit_vif" {
 
   amazon_address   = var.amazon_ips[count.index]
   customer_address = var.customer_ips[count.index]
+  dx_gateway_id    = aws_dx_gateway.dxgw.id
 
-  dx_gateway_id = aws_dx_gateway.dxgw.id
-
-  tags = {
-    Name        = "transit-vif-${count.index}"
-    Environment = "network"
-  }
+  tags = merge(
+    local.tags,
+    {
+      Name = "st-ns-prod-dx-vif-${count.index}"   # override per resource
+    }
+  )
 }
+
